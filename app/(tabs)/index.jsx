@@ -1410,6 +1410,51 @@ const Index = () => {
               </View>
             </View>
 
+            <View
+              style={[
+                styles.emailSection,
+                {
+                  marginBottom: 15,
+                  paddingBottom: 13,
+                  borderBottomWidth: 10,
+                  borderBottomColor: "#F1F1F1",
+                },
+              ]}
+            >
+              <View style={styles.emailHeader}>
+                <Text style={styles.emailTitle}>
+                  Read your most interested buyers
+                </Text>
+                <TouchableOpacity>
+                  <Ionicons
+                    name="ellipsis-horizontal"
+                    size={20}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.emailDescription}>
+                  optimise your ads spend and connect with the right customers
+                  more efficiently and leverage the power of Audience with
+                  Shopify Plus
+                </Text>
+                {/* <ImageIcon /> */}
+                {/* <Image
+                  source={require("../../assets/images/image.png")}
+                  style={{ width: 140, height: 120, marginHorizontal: 10 }}
+                /> */}
+              </View>
+
+              <TouchableOpacity style={styles.emailButton}>
+                <Text style={styles.emailButtonText}>Upgrade to Shopify Plus</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity>
+                <Text style={styles.learnMore}>Learn more</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.emailSection}>
               <View style={styles.emailHeader}>
                 <Text style={styles.emailTitle}>
@@ -1691,14 +1736,11 @@ const Index = () => {
                 />
                 <Text style={styles.dateInputLabel}>
                   {selectedStartDate
-                    ? new Date(selectedStartDate).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        }
-                      )
+                    ? new Date(selectedStartDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
                     : "Start date"}
                 </Text>
               </View>
@@ -1712,14 +1754,11 @@ const Index = () => {
                 />
                 <Text style={styles.dateInputLabel}>
                   {selectedEndDate
-                    ? new Date(selectedEndDate).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        }
-                      )
+                    ? new Date(selectedEndDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
                     : "End date"}
                 </Text>
               </View>
@@ -1982,7 +2021,7 @@ const styles = StyleSheet.create({
   },
   emailSection: {
     backgroundColor: "white",
-    padding: 16,
+    paddingHorizontal: 16,
     borderRadius: 8,
     // marginBottom: 16,
   },
@@ -1993,7 +2032,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   emailTitle: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "600",
     flex: 1,
   },
@@ -2017,6 +2056,7 @@ const styles = StyleSheet.create({
   learnMore: {
     color: "#0066ff",
     textAlign: "center",
+    fontSize: 13,
   },
   addOrderButton: {
     backgroundColor: "#d500f9",

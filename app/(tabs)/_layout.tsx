@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
@@ -9,6 +9,7 @@ import { Entypo, Feather, Ionicons, Foundation } from "@expo/vector-icons";
 import OrderIcon from "../../assets/images/OrderIcon";
 import HomeFilledIcon from "../../assets/images/HomeFilledIcon";
 import ProductIcon from "../../assets/images/ProductIcon";
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -16,16 +17,17 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "black",
-
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          backgroundColor: "#fff", // Explicit white background
+          ...(Platform.OS === "ios"
+            ? {
+                position: "absolute",
+              }
+            : {}),
+        },
       }}
     >
       <Tabs.Screen

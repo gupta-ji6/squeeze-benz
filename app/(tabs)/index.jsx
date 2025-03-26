@@ -965,42 +965,42 @@ const Index = () => {
             margin: 2,
           }}
           formatYLabel={formatYLabel}
-          pointerConfig={{
-            radius: 5,
-            pointerColor: "#12ABF0",
-            pointerLabelWidth: 100,
-            pointerLabelHeight: 35,
-            activatePointersOnLongPress: true,
-            autoConfigurePointer: true,
-            pointerStripHeight: 160,
-            pointerStripColor: "lightgray",
-            pointerStripWidth: 2,
-            pointerLabelComponent: (items) => {
-              if (!items || items.length === 0 || !items[0]) return null;
-              const item = items[0];
-              return (
-                <View
-                  style={{
-                    height: 35,
-                    width: 100,
-                    backgroundColor: "black",
-                    borderRadius: 4,
-                    padding: 5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 10 }}>
-                    {metric === "Total sales"
-                      ? `$${item.value.toFixed(2)}`
-                      : metric === "Conversion rate"
-                      ? `${item.value.toFixed(2)}%`
-                      : item.value.toFixed(0)}
-                  </Text>
-                </View>
-              );
-            },
-          }}
+          // pointerConfig={{
+          //   // radius: 5,
+          //   // pointerColor: "#12ABF0",
+          //   pointerLabelWidth: 100,
+          //   pointerLabelHeight: 35,
+          //   activatePointersOnLongPress: true,
+          //   autoConfigurePointer: true,
+          //   pointerStripHeight: 160,
+          //   // pointerStripColor: "lightgray",
+          //   // pointerStripWidth: 2,
+          //   pointerLabelComponent: (items) => {
+          //     if (!items || items.length === 0 || !items[0]) return null;
+          //     const item = items[0];
+          //     return (
+          //       <View
+          //         style={{
+          //           height: 35,
+          //           width: 100,
+          //           backgroundColor: "black",
+          //           borderRadius: 4,
+          //           padding: 5,
+          //           justifyContent: "center",
+          //           alignItems: "center",
+          //         }}
+          //       >
+          //         <Text style={{ color: "white", fontSize: 10 }}>
+          //           {metric === "Total sales"
+          //             ? `$${item.value.toFixed(2)}`
+          //             : metric === "Conversion rate"
+          //             ? `${item.value.toFixed(2)}%`
+          //             : item.value.toFixed(0)}
+          //         </Text>
+          //       </View>
+          //     );
+          //   },
+          // }}
           curved
           textShiftY={10}
           textShiftX={0}
@@ -1009,6 +1009,9 @@ const Index = () => {
             return null;
           }}
           onPress={() => {}}
+          enablePanGesture={false}
+          disableScroll={Platform.OS === 'ios'}
+          scrollable={false}
         />
 
         {/* Time labels container */}
@@ -1288,14 +1291,14 @@ const Index = () => {
               {profileData.image ? (
                 <Image
                   source={{ uri: profileData.image }}
-                  width={40}
-                  height={40}
+                  width={34}
+                  height={34}
                   style={{ borderRadius: 8 }} // Updated radius
                 />
               ) : (
-                <View style={styles.logo}>
-                  <Text style={styles.logoText}>SB</Text>
-                </View>
+              <View style={styles.logo}>
+                <Text style={styles.logoText}>SB</Text>
+              </View>
               )}
             </View>
             <Text style={styles.title}>{profileData.name}</Text>
@@ -1668,23 +1671,23 @@ const Index = () => {
                   {Object.keys(rangeDataMap)
                     .filter((range) => range !== "Custom range") // Filter out Custom range from the list
                     .map((range, index) => (
-                      <TouchableOpacity
-                        key={index}
+                  <TouchableOpacity
+                    key={index}
                         style={styles.optionItem}
-                        onPress={() => {
-                          setSelectedDateRange(range);
+                    onPress={() => {
+                      setSelectedDateRange(range);
                           setSelectingOption(false);
-                        }}
-                      >
-                        <Text
-                          style={[
+                    }}
+                  >
+                    <Text
+                      style={[
                             styles.optionText,
                             selectedDateRange === range &&
                               styles.selectedOptionText,
-                          ]}
-                        >
-                          {range}
-                        </Text>
+                      ]}
+                    >
+                      {range}
+                    </Text>
                         {selectedDateRange === range && (
                           <Ionicons
                             name="checkmark"
@@ -1692,8 +1695,8 @@ const Index = () => {
                             // color="#d500f9"
                           />
                         )}
-                      </TouchableOpacity>
-                    ))}
+                  </TouchableOpacity>
+                ))}
                 </ScrollView>
               </>
             ) : (
@@ -1705,13 +1708,13 @@ const Index = () => {
                   ]}
                 >
                   <Text style={styles.calendarTitle}>Custom date range</Text>
-                  <TouchableOpacity
+                <TouchableOpacity
                     style={styles.closeButton}
                     onPress={() => setShowCalendar(false)}
-                  >
+                >
                     <Ionicons name="close" size={20} color="black" />
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
+              </View>
 
                 <View style={styles.dateInputContainer}>
                   <View style={styles.dateInputWrapper}>
@@ -1733,7 +1736,7 @@ const Index = () => {
                           )
                         : "Start date"}
                     </Text>
-                  </View>
+            </View>
                   <Text style={styles.dateArrow}>→</Text>
                   <View style={styles.dateInputWrapper}>
                     <Ionicons
@@ -1966,8 +1969,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: 34,
+    height: 34,
     borderRadius: 8,
     backgroundColor: "#d500f9",
     justifyContent: "center",
@@ -1976,7 +1979,7 @@ const styles = StyleSheet.create({
   logoText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 14,
   },
   title: {
     marginLeft: 12,
@@ -2031,8 +2034,8 @@ const styles = StyleSheet.create({
   },
   reportBtn: {
     backgroundColor: "#ffffff",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#e0e0e0",

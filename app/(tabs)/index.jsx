@@ -815,6 +815,7 @@ const Index = () => {
             width: isMain ? undefined : 50,
             alignSelf: "flex-start",
             color: isMain ? (isPositive ? "#288A5B" : "#A7A7A7") : "#A7A7A7",
+            lineHeight: isMain ? 18 : 14, // Adjust line height to reduce gap
           },
         ]}
       >
@@ -823,14 +824,16 @@ const Index = () => {
             name="arrow-up-right"
             size={isMain ? 18 : 12}
             color={isMain ? "#288A5B" : "#A7A7A7"}
+            style={{ marginRight: 2 }} // Reduce space between icon and text
           />
         ) : (
           <Feather
             name="arrow-down-right"
             size={isMain ? 18 : 12}
             color="#A7A7A7"
+            style={{ marginRight: 2 }} // Reduce space between icon and text
           />
-        )}{" "}
+        )}
         {Math.abs(numValue)}%
       </Text>
     );
@@ -1011,7 +1014,7 @@ const Index = () => {
           }}
           onPress={() => {}}
           enablePanGesture={false}
-          disableScroll={Platform.OS === 'ios'}
+          disableScroll={Platform.OS === "ios"}
           scrollable={false}
         />
 
@@ -1297,9 +1300,9 @@ const Index = () => {
                   style={{ borderRadius: 8 }} // Updated radius
                 />
               ) : (
-              <View style={styles.logo}>
-                <Text style={styles.logoText}>SB</Text>
-              </View>
+                <View style={styles.logo}>
+                  <Text style={styles.logoText}>SB</Text>
+                </View>
               )}
             </View>
             <Text style={styles.title}>{profileData.name}</Text>
@@ -1672,23 +1675,23 @@ const Index = () => {
                   {Object.keys(rangeDataMap)
                     .filter((range) => range !== "Custom range") // Filter out Custom range from the list
                     .map((range, index) => (
-                  <TouchableOpacity
-                    key={index}
+                      <TouchableOpacity
+                        key={index}
                         style={styles.optionItem}
-                    onPress={() => {
-                      setSelectedDateRange(range);
+                        onPress={() => {
+                          setSelectedDateRange(range);
                           setSelectingOption(false);
-                    }}
-                  >
-                    <Text
-                      style={[
+                        }}
+                      >
+                        <Text
+                          style={[
                             styles.optionText,
                             selectedDateRange === range &&
                               styles.selectedOptionText,
-                      ]}
-                    >
-                      {range}
-                    </Text>
+                          ]}
+                        >
+                          {range}
+                        </Text>
                         {selectedDateRange === range && (
                           <Ionicons
                             name="checkmark"
@@ -1696,8 +1699,8 @@ const Index = () => {
                             // color="#d500f9"
                           />
                         )}
-                  </TouchableOpacity>
-                ))}
+                      </TouchableOpacity>
+                    ))}
                 </ScrollView>
               </>
             ) : (
@@ -1709,13 +1712,13 @@ const Index = () => {
                   ]}
                 >
                   <Text style={styles.calendarTitle}>Custom date range</Text>
-                <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.closeButton}
                     onPress={() => setShowCalendar(false)}
-                >
+                  >
                     <Ionicons name="close" size={20} color="black" />
-                </TouchableOpacity>
-              </View>
+                  </TouchableOpacity>
+                </View>
 
                 <View style={styles.dateInputContainer}>
                   <View style={styles.dateInputWrapper}>
@@ -1737,7 +1740,7 @@ const Index = () => {
                           )
                         : "Start date"}
                     </Text>
-            </View>
+                  </View>
                   <Text style={styles.dateArrow}>→</Text>
                   <View style={styles.dateInputWrapper}>
                     <Ionicons

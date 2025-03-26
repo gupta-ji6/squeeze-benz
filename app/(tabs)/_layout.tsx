@@ -19,7 +19,6 @@ export default function TabLayout() {
         tabBarActiveTintColor: "black",
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: {
           backgroundColor: "#fff", // Explicit white background
           ...(Platform.OS === "ios"

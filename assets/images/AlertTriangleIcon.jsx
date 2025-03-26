@@ -10,7 +10,7 @@ function AlertTriangleIcon(props) {
       height={24}
       {...props}
     >
-      <Path d="M10 6.75a.75.75 0 01.75.75V11a.75.75 0 11-1.5 0V7.5a.75.75 0 01.75-.75zM11 13.5a1 1 0 11-2 0 1 1 0 012 0z" />
+      <Path fill="#727272" d="M10 6.75a.75.75 0 01.75.75V11a.75.75 0 11-1.5 0V7.5a.75.75 0 01.75-.75zM11 13.5a1 1 0 11-2 0 1 1 0 012 0z" />
       <Path
         fillRule="evenodd"
         fill="#727272"

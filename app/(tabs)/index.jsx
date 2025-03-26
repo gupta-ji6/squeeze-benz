@@ -7,7 +7,9 @@ import {
   Modal,
   Dimensions,
   Image,
-  // Image,
+  RefreshControl,
+  ActivityIndicator,
+  Platform,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,6 +24,7 @@ import Animated, {
   withSpring,
   Easing,
   runOnJS,
+  withSequence,
 } from "react-native-reanimated";
 import { Linking } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
@@ -255,6 +258,44 @@ const Index = () => {
       transform: [{ translateX: translateX.value }],
     };
   });
+
+  // Add new state for refresh control
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Add new animated value for refresh animation
+  const refreshHeight = useSharedValue(0);
+
+  // Create animated style for the refresh container
+  const refreshContainerStyle = useAnimatedStyle(() => {
+    return {
+      height: refreshHeight.value,
+      opacity: refreshHeight.value / 60, // Fade in as we pull down
+    };
+  });
+
+  // Modify the onRefresh function
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    // Animate the refresh container
+    refreshHeight.value = withSequence(
+      withSpring(60), // Pull down to 60
+      withTiming(0, { duration: 300 }) // Animate back up
+    );
+
+    // Minimum refresh time of 1.5 seconds for better UX
+    const minimumRefreshTime = new Promise((resolve) =>
+      setTimeout(resolve, 1500)
+    );
+
+    // Your existing data reload
+    const dataReload = loadAndGenerateData();
+
+    // Wait for both minimum time and data reload
+    Promise.all([minimumRefreshTime, dataReload]).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   useEffect(() => {
     const loadProfileData = async () => {
@@ -647,15 +688,11 @@ const Index = () => {
 
   // Modify the getMetricChartData function to include the secondary line
   const getMetricChartData = (metric) => {
-    // Generate labels for selected date range
     const labels = generateTimeLabels(selectedDateRange);
-
-    // Get the stored chart data for the current range and metric
     const storedChartData = generatedChartData[selectedDateRange];
 
     let primaryData = [];
     if (storedChartData) {
-      // Use the stored data if available
       let values = [];
       switch (metric) {
         case "Total sales":
@@ -672,14 +709,12 @@ const Index = () => {
           break;
       }
 
-      // Format data for gifted-charts
       primaryData = values.map((value, index) => ({
         value,
         label: labels[index] || "",
         dataPointText: "",
       }));
     } else {
-      // Fallback to default values - create 15 dummy points
       primaryData = Array(15)
         .fill(0)
         .map((_, index) => ({
@@ -689,17 +724,25 @@ const Index = () => {
         }));
     }
 
-    // Generate secondary data based on primary data
+    // Generate more varied secondary data
     const secondaryData = primaryData.map((item, index) => {
-      // Calculate secondary value (alternate between multiplying by 1.3 and 0.8)
-      const factor = index % 2 === 0 ? 1.3 : 0.8;
+      // Create more dramatic variations between primary and secondary data
+      let factor;
+      if (index === 0 || index === primaryData.length - 1) {
+        // Ensure start and end points are notably different
+        factor = index === 0 ? 0.5 : 1.8;
+      } else {
+        // Create a wave-like pattern for middle points
+        factor = 1 + Math.sin(index * (Math.PI / 4)) * 0.5;
+      }
+
       const secondaryValue = Math.round(item.value * factor);
 
       return {
         value: secondaryValue,
         label: item.label,
         dataPointText: "",
-        isDotted: true, // Add this property to make the line dashed
+        isDotted: true,
       };
     });
 
@@ -754,21 +797,38 @@ const Index = () => {
   };
 
   // Render change indicator with correct arrow
-  const renderChangeIndicator = (value) => {
+  const renderChangeIndicator = (value, isMain) => {
     const numValue = Number(value);
     const isPositive = !isNaN(numValue) && numValue >= 0;
+    if (numValue === 0) {
+      return null;
+    }
 
     return (
       <Text
         style={[
           styles.metricChange,
           isPositive ? styles.positiveChange : styles.negativeChange,
+          {
+            fontSize: isMain ? 14 : 10,
+            width: isMain ? undefined : 50,
+            alignSelf: "flex-start",
+            color: isMain ? (isPositive ? "#288A5B" : "#A7A7A7") : "#A7A7A7",
+          },
         ]}
       >
         {isPositive ? (
-          <Feather name="arrow-up-right" size={14} color="#4caf50" />
+          <Feather
+            name="arrow-up-right"
+            size={isMain ? 18 : 12}
+            color={isMain ? "#288A5B" : "#A7A7A7"}
+          />
         ) : (
-          <Feather name="arrow-down-right" size={14} color="#f44336" />
+          <Feather
+            name="arrow-down-right"
+            size={isMain ? 18 : 12}
+            color="#A7A7A7"
+          />
         )}{" "}
         {Math.abs(numValue)}%
       </Text>
@@ -779,6 +839,32 @@ const Index = () => {
   const renderMetricItem = ({ item: metric, index }) => {
     const { primaryData, secondaryData } = getMetricChartData(metric);
     const color = getChartColor(metric);
+
+    // Extract only 3 labels - start, middle, and end
+    const timeLabels = [
+      primaryData[0]?.label || "", // First label
+      primaryData[7]?.label || "", // Middle label
+      primaryData[14]?.label || "", // Last label
+    ];
+
+    // Enhanced formatYLabel function
+    const formatYLabel = (value) => {
+      let formattedValue = value;
+      if (value >= 1000000) {
+        formattedValue = (value / 1000000).toFixed(0) + "M";
+      } else if (value >= 1000) {
+        formattedValue = (value / 1000).toFixed(0) + "k";
+      } else if (value >= 100) {
+        // Round to nearest hundred for values between 100 and 1000
+        formattedValue = Math.round(value / 100) * 100;
+      }
+
+      // Add dollar sign if it's Total sales
+      if (metric === "Total sales") {
+        return `$${formattedValue}`;
+      }
+      return formattedValue;
+    };
 
     // Ensure we have valid chart data
     if (!primaryData || primaryData.length === 0) {
@@ -821,14 +907,6 @@ const Index = () => {
       };
     });
 
-    // Format y-axis labels with $ when metric is Total sales
-    const formatYLabel = (value) => {
-      if (metric === "Total sales") {
-        return `$${value}`;
-      }
-      return value;
-    };
-
     return (
       <View
         style={[
@@ -845,20 +923,17 @@ const Index = () => {
           )}`}
           data={processedPrimaryData}
           secondaryData={processedSecondaryData}
-          // yAxisColor="red"
           yAxisTextStyle={{ color: "#848485", fontSize: 10 }}
-          height={140}
+          height={120}
           width={screenWidth - 90}
           noOfSections={3}
-          spacing={screenWidth / (processedPrimaryData.length + 4.5)}
-          // Primary line settings
+          spacing={screenWidth / processedPrimaryData.length}
           color={"#12ABF0"}
           thickness={2}
           startFillColor={"#12ABF0"}
           endFillColor="transparent"
           startOpacity={0.3}
           endOpacity={0.01}
-          // Secondary line settings
           secondaryLineConfig={{
             color: "#0696D4",
             thickness: 1.5,
@@ -866,7 +941,7 @@ const Index = () => {
             curved: true,
           }}
           textColor="#555555"
-          initialSpacing={5}
+          initialSpacing={0}
           hideRules={false}
           hideDataPoints={false}
           dataPointsColor="#12ABF0"
@@ -878,11 +953,8 @@ const Index = () => {
           verticalLinesColor="rgba(14,164,164,0.5)"
           rulesType="solid"
           xAxisLabelTextStyle={{
-            fontSize: 9,
-            color: "#848485",
-            fontWeight: "400",
-            width: 45,
-            textAlign: "center",
+            height: 0,
+            width: 0,
           }}
           yAxisLabelTextStyle={{
             fontSize: 9,
@@ -938,6 +1010,15 @@ const Index = () => {
           }}
           onPress={() => {}}
         />
+
+        {/* Time labels container */}
+        <View style={styles.timeLabelContainer}>
+          {timeLabels.map((label, idx) => (
+            <Text key={idx} style={styles.timeLabel}>
+              {label}
+            </Text>
+          ))}
+        </View>
       </View>
     );
   };
@@ -1176,7 +1257,32 @@ const Index = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.container}>
+        <ScrollView
+          style={[styles.container, { backgroundColor: "white" }]}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="transparent"
+              colors={["white"]}
+              // progressBackgroundColor="transparent"
+              style={{ backgroundColor: "transparent", elevation: 0 }}
+              progressViewOffset={-20}
+              size="default"
+              title=""
+            />
+          }
+          contentContainerStyle={{
+            paddingTop: refreshing ? 0 : 0,
+          }}
+        >
+          {/* Custom refresh animation */}
+          <Animated.View
+            style={[styles.refreshContainer, refreshContainerStyle]}
+          >
+            <ActivityIndicator size="large" color="#939393" />
+          </Animated.View>
+
           <View style={styles.header}>
             <View style={styles.logoContainer}>
               {profileData.image ? (
@@ -1279,13 +1385,14 @@ const Index = () => {
                       {getMetricValue(metrics[selectedMetricIndex])}
                     </Text>
                     {renderChangeIndicator(
-                      getMetricChange(metrics[selectedMetricIndex])
+                      getMetricChange(metrics[selectedMetricIndex]),
+                      true
                     )}
                   </View>
                 </View>
 
                 {/* Second metric */}
-                <View style={{ marginLeft: 30 }}>
+                <View style={{ marginLeft: 50 }}>
                   <Text style={styles.metricLabel}>
                     {metrics[selectedMetricIndex] === "Total sales"
                       ? "Orders"
@@ -1311,7 +1418,8 @@ const Index = () => {
                       ? dashboardData.conversionRateChange
                       : metrics[selectedMetricIndex] === "Conversion rate"
                       ? dashboardData.sessionsChange
-                      : dashboardData.totalSalesChange
+                      : dashboardData.totalSalesChange,
+                    false
                   )}
                 </View>
 
@@ -1342,7 +1450,8 @@ const Index = () => {
                       ? dashboardData.sessionsChange
                       : metrics[selectedMetricIndex] === "Conversion rate"
                       ? dashboardData.totalSalesChange
-                      : dashboardData.ordersChange
+                      : dashboardData.ordersChange,
+                    false
                   )}
                 </View>
               </View>
@@ -1352,7 +1461,7 @@ const Index = () => {
             <View>
               <Carousel
                 width={screenWidth}
-                height={170}
+                height={165}
                 data={metrics}
                 renderItem={renderMetricItem}
                 onSnapToItem={(index) => {
@@ -1386,7 +1495,13 @@ const Index = () => {
                     {dashboardData.paymentCapture || 0}
                   </Text>
                 </View>
-                <Text style={styles.statsLabel}>Payment to capture</Text>
+                <Text
+                  style={styles.statsLabel}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  Payment to capture
+                </Text>
               </View>
 
               <View style={styles.statsBox}>
@@ -1448,7 +1563,9 @@ const Index = () => {
               </View>
 
               <TouchableOpacity style={styles.emailButton}>
-                <Text style={styles.emailButtonText}>Upgrade to Shopify Plus</Text>
+                <Text style={styles.emailButtonText}>
+                  Upgrade to Shopify Plus
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity>
@@ -1909,7 +2026,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "green",
+    backgroundColor: "#33E88C",
     marginRight: 6,
   },
   reportBtn: {
@@ -1948,12 +2065,13 @@ const styles = StyleSheet.create({
   metricChange: {
     fontSize: 12,
     fontWeight: "800",
+    paddingRight: 5,
   },
   positiveChange: {
-    color: "#4caf50",
+    color: "#288A5B",
   },
   negativeChange: {
-    color: "#f44336",
+    color: "#A7A7A7",
   },
   metricLabel: {
     fontSize: 12,
@@ -2403,5 +2521,49 @@ const styles = StyleSheet.create({
   monthTitle: {
     fontSize: 16,
     fontWeight: "500",
+  },
+  timeLabelContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // paddingHorizontal: 10,
+    marginHorizontal: 10,
+    marginTop: -10,
+    marginRight: 60,
+  },
+  timeLabel: {
+    fontSize: 9,
+    color: "#848485",
+    fontWeight: "400",
+    width: 45,
+    textAlign: "center",
+  },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    zIndex: 1000,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: "#12ABF0",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  refreshContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    overflow: "hidden",
+  },
+  refreshText: {
+    color: "#12ABF0",
+    fontSize: 14,
+    fontWeight: "500",
+    marginTop: 10,
   },
 });

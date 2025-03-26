@@ -33,6 +33,7 @@ import ClipboardCheckIcon from "../../assets/images/ClipboardCheckIcon";
 import OrderIcon from "../../assets/images/OrderIcon";
 import AlertTriangleIcon from "../../assets/images/AlertTriangleIcon";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import NotificationIcon from "../../assets/images/NotificationIcon";
 // import ImageIcon from "../../assets/images/image";
 
 const screenWidth = Dimensions.get("window").width;
@@ -1316,7 +1317,7 @@ const Index = () => {
                 });
               }}
             >
-              <Ionicons name="notifications-outline" size={24} color="black" />
+              <NotificationIcon />
             </TouchableOpacity>
           </View>
 
@@ -2115,8 +2116,8 @@ const styles = StyleSheet.create({
     gap: 2,
     justifyContent: "space-between",
     marginBottom: 16,
-    marginTop: 16,
-    paddingTop: 16,
+    // marginTop: 16,
+    paddingTop: 12,
     backgroundColor: "#F1F1F1",
     paddingHorizontal: 16,
   },
@@ -2125,7 +2126,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 5,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: "#E3E3E3",
   },

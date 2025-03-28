@@ -28,6 +28,7 @@
         <data android:scheme="myapp"/>
         <data android:scheme="com.prakhargaba.shopify"/>
         <data android:scheme="exp+squeeze-benz"/>
+        <data android:scheme="com.prakhargaba.popify"/>
       </intent-filter>
     </activity>
   </application>

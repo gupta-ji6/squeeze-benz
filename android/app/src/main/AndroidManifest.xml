@@ -26,9 +26,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.prakhargaba.shopify"/>
-        <data android:scheme="exp+squeeze-benz"/>
         <data android:scheme="com.prakhargaba.popify"/>
+        <data android:scheme="exp+squeeze-benz"/>
       </intent-filter>
     </activity>
   </application>

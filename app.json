@@ -1,22 +1,23 @@
 {
   "expo": {
-    "name": "Shopify",
+    "name": "Popify",
     "slug": "squeeze-benz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/shopify.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.prakhargaba.popify"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/shopify.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.prakhargaba.shopify",
+      "package": "com.prakhargaba.popify",
       "jsEngine": "hermes"
     },
     "web": {

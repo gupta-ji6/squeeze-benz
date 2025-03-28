@@ -9,7 +9,7 @@ PODS:
   - EXJSONUtils (0.14.0)
   - EXManifests (0.15.7):
     - ExpoModulesCore
-  - Expo (52.0.40):
+  - Expo (52.0.41):
     - ExpoModulesCore
   - expo-dev-client (5.0.15):
     - EXManifests
@@ -230,7 +230,7 @@ PODS:
     - ExpoModulesCore
   - ExpoHead (4.0.19):
     - ExpoModulesCore
-  - ExpoImage (2.0.6):
+  - ExpoImage (2.0.7):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.19.1)
@@ -2486,7 +2486,7 @@ SPEC CHECKSUMS:
   EXImageLoader: e5da974e25b13585c196b658a440720c075482d5
   EXJSONUtils: 01fc7492b66c234e395dcffdd5f53439c5c29c93
   EXManifests: 807ab5394ca9f8dd5e64283f02876b2f85c4eb72
-  Expo: 4f645fc381f88e6acacfb0dcb63b45fb9eff25b9
+  Expo: 73171149d69a436153195f72d7b0fef4d82ae380
   expo-dev-client: 8ddff983ea32604dc57248d40568add68ce8ea45
   expo-dev-launcher: 079691b1904a4ec89a286367375879342103468a
   expo-dev-menu: 84c253743978d909c59a70297ffc75701905cdca
@@ -2497,7 +2497,7 @@ SPEC CHECKSUMS:
   ExpoFont: f354e926f8feae5e831ec8087f36652b44a0b188
   ExpoHaptics: 8d199b2f33245ea85289ff6c954c7ee7c00a5b5d
   ExpoHead: caaccab2474a1b1f3be62eb1d493f9d30c704f94
-  ExpoImage: c6d1f54445f38766650052aedf5396a74bb96fff
+  ExpoImage: d840b256050f4428d2942bc2b6e9251f9e0d7021
   ExpoImagePicker: 24e5ba8da111f74519b1e6dc556e0b438b2b8464
   ExpoKeepAwake: b0171a73665bfcefcfcc311742a72a956e6aa680
   ExpoLinearGradient: 35ebd83b16f80b3add053a2fd68cc328ed927f60
